@@ -41,13 +41,10 @@ int main(int argc, char * argv[]) {
     Options options(PROGRAM_NAME);
     try {
         parseArgs(argc, argv, options);
-        if (options.count(K_OPT) != 1 || options.count(LINK_CAP_OPT) != 1 || options.count(HOST_CAP_OPT) != 1)
-            throw exception();
-        
-        k = options[K_OPT       ].as<int>   ();
-        l = options[LINK_CAP_OPT].as<int>   ();
-        h = options[HOST_CAP_OPT].as<int>   ();
-        o = (options.count(OUTPUT_OPT) > 0) ? options[OUTPUT_OPT].as<string>() : DEF_DC_FILE_NAME;
+        k = 4;
+        l = 10;
+        h = 10;
+        o = "dc.txt";
 
         KAryFatTree topology(k);
         cout << "K        : " << k                  << endl;

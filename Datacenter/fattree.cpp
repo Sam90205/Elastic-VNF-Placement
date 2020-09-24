@@ -16,22 +16,21 @@ void KAryFatTree::connectCoreLevelToAggLevel_() {
     
     for (int i = 0; i < coreSwitches; i++) {
         Identifier coreSwitchId = i;
-        for (int port = 0; port < pods; port++) {
-            Identifier aggSwitchId = aggStartIndex + port * (_k / 2) + i / (_k / 2);
+        for (int port = 0; port < 22; port++) {
+            Identifier aggSwitchId = coreSwitchNum()+port;
             this->addEdge(nodeFromId(coreSwitchId), nodeFromId(aggSwitchId));
         }//for
     }//for
 }
 
 void KAryFatTree::connectAggLevelToEdgeLevel_() {
-    int aggStartIndex  = coreSwitchNum();
-    int edgeStartIndex = coreSwitchNum() + aggSwitchNum();
-    int aggSwitches    = aggSwitchNum();
+    int aggStartIndex  = coreSwitchNum(); //12
+    int edgeStartIndex = coreSwitchNum() + aggSwitchNum(); //12+22
+    int aggSwitches    = aggSwitchNum(); // 22
     for (int i = 0; i < aggSwitches; i++) {
         Identifier aggSwitchId = aggStartIndex + i;
-        for (int port = 0; port < (_k / 2); port++) {
-            Identifier edgeSwitchId = edgeStartIndex + port +
-                                        (i / (_k / 2)) * (_k / 2);
+        for (int port = 0; port < 2; port++) {
+            Identifier edgeSwitchId = edgeStartIndex + port + (i / 2) * 2;
             this->addEdge(nodeFromId(aggSwitchId), nodeFromId(edgeSwitchId));
         }//for
     }//for
@@ -43,15 +42,15 @@ void KAryFatTree::connectEdgeLevelToHosts_() {
     int edgeSwitches   = edgeSwitchNum();
     for (int i = 0; i < edgeSwitches; i++) {
         Identifier edgeSwitchId = edgeStartIndex + i;
-        for (int port = 0; port < (_k / 2); port++) {
-            Identifier hostId = hostStartIndex + i * (_k / 2) + port;
+        for (int port = 0; port < 2; port++) {
+            Identifier hostId = hostStartIndex + i * (2) + port;
             this->addEdge(nodeFromId(edgeSwitchId), nodeFromId(hostId));
         }//for
     }//for
 }
 
 void KAryFatTree::init_(int k) {
-    _k = k;
+    _k = 4;
     
     //Generate all nodes
     int nodes_count = coreSwitchNum() +
@@ -83,35 +82,43 @@ int KAryFatTree::k() {
 }
 
 int KAryFatTree::coreSwitchNum() {
-    return (k() / 2) * (k() / 2);
+    return 12;
+    //return (k() / 2) * (k() / 2);
 }
 
 int KAryFatTree::aggSwitchNum() {
-    return k() * k() / 2;
+    return 22;
+    //return k() * k() / 2;
 }
 
 int KAryFatTree::edgeSwitchNum() {
-    return k() * k() / 2;
+    return 22;
+    //return k() * k() / 2;
 }
 
 int KAryFatTree::hostNum() {
-    return edgeSwitchNum() * (k() / 2);
+    return 44;
+    //return edgeSwitchNum() * (k() / 2);
 }
 
 int KAryFatTree::podNum() {
-    return k();
+    return 12;
+    //return k();
 }
 
 int KAryFatTree::coreLinkNum() {
-    return coreSwitchNum() * k();
+    return 132;
+    //return coreSwitchNum() * k();
 }
 
 int KAryFatTree::aggLinkNum() {
-    return aggSwitchNum() * (k() / 2);
+    return  200;
+    //return aggSwitchNum() * (k() / 2);
 }
 
 int KAryFatTree::edgeLinkNum() {
-    return edgeSwitchNum() * (k() / 2);
+    return 200;
+    //return edgeSwitchNum() * (k() / 2);
 }
 
 KAryFatTree::NodeRangeIt KAryFatTree::coreSwitchIt() {
