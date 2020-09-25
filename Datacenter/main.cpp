@@ -62,6 +62,7 @@ int main(int argc, char * argv[]) {
         for (EdgeIt e(network); e != INVALID; ++e) {
             network.capacity(e, l);
             network.weight  (e, DEF_LINK_WEIGHT);
+            network.link    (e, 12);
         }//for
         
         GraphIO::writeGraph(network, o);

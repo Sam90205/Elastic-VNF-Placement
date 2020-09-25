@@ -17,7 +17,8 @@ SubstrateGraph::SubstrateGraph() :
                                 _edgeResidual (*this, NO_CAPACITY),
                                 _arcResidual  (*this, NO_CAPACITY),
                                 _edgeWeight   (*this, NO_WEIGHT  ),
-                                _arcWeight    (*this, NO_WEIGHT  ) { };
+                                _arcWeight    (*this, NO_WEIGHT  ),
+                                _edgeLink     (*this, NO_LINK){ };
 
 SubstrateGraph::SubstrateGraph(Graph& graph) : SubstrateGraph() {
     this->copyFrom(graph);
@@ -42,6 +43,11 @@ Weight SubstrateGraph::weight(Edge e) {
 Weight SubstrateGraph::weight(Arc a) {
     return _arcWeight[a];
 }
+
+Link SubstrateGraph::link (Edge e){
+    return _edgeResidual[e];
+}
+
 
 Capacity SubstrateGraph::residual(Node n) {
     return _nodeResidual[n];
@@ -88,6 +94,10 @@ void SubstrateGraph::weight(Edge e,  Weight w) {
 
 void SubstrateGraph::weight(Arc a, Capacity amount) {
     _arcWeight[a] = amount;
+}
+
+void SubstrateGraph::link(Edge e,  Link l) {
+    _edgeLink[e] = l;
 }
 
 void SubstrateGraph::allocate(Node n, Capacity amount) {

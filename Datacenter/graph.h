@@ -19,6 +19,7 @@
 
 typedef int               Capacity;
 typedef int               Weight;
+typedef int               Link;
 typedef lemon::Invalid    Invalid;
 
 typedef lemon::SmartGraph Graph;

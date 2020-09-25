@@ -33,6 +33,7 @@ using std::ostream;
 #define NODE_IS_KARIZ   "isKariz"
 #define NODE_SUP        "supply"
 #define EDGE_FLW        "flow"
+#define EDGE_LINK       "link"
 
 class GraphIO {
 public:

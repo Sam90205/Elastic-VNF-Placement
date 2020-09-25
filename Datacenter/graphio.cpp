@@ -74,6 +74,7 @@ void GraphIO::writeGraph(SubstrateGraph& g, ostream& os){
         edgeMap(EDGE_CAP, g._edgeCapacity).
         edgeMap(EDGE_RES, g._edgeResidual).
         edgeMap(EDGE_WEI, g._edgeWeight).
+        edgeMap(EDGE_LINK,g._edgeLink).
         run();
 }
 
