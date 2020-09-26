@@ -26,6 +26,8 @@ using std::ostream;
 #define K_ATTR          "k"
 #define NODE_CAP        "capacity"
 #define EDGE_CAP        "capacity"
+#define NODE_ALL        "allocated"
+#define EDGE_ALL        "allocated"
 #define NODE_RES        "residual"
 #define EDGE_RES        "residual"
 #define EDGE_WEI        "weight"
@@ -34,6 +36,7 @@ using std::ostream;
 #define NODE_SUP        "supply"
 #define EDGE_FLW        "flow"
 #define EDGE_LINK       "link"
+#define EDGE_LINK1      "link1"
 
 class GraphIO {
 public:
@@ -48,6 +51,6 @@ public:
     static void writeGraph(KAryFatTree&    g, string path);
     static void writeGraph(SubstrateGraph& g, ostream& os);
     static void writeGraph(SubstrateGraph& g, string path);
-//    static void writeGraph(FlowGraph&      g, ostream& os);
-//    static void writeGraph(FlowGraph&      g, string path);
+    static void writeGraph(FlowGraph&      g, ostream& os);
+    static void writeGraph(FlowGraph&      g, string path);
 };

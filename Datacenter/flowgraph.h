@@ -33,7 +33,7 @@ public:
 #define BANDWIDTH_UNIT    1
 #define KARIZ_DEMAND_VAL  2
 #define NO_SUPPLY         0
-#define NO_FLOW           0
+#define NO_FLOW           10
 #define NOT_KARIZ         false
 #define NO_FACILITY       false
     typedef NodeMap<bool>          IsKariz;

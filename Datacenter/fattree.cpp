@@ -9,6 +9,20 @@
 #include "fattree.h"
 #include <stdexcept>
 
+void KAryFatTree::connectFlowCoreLevelToAggLevel_() {
+    int pods          = podNum();
+    int aggStartIndex = coreSwitchNum();
+    int coreSwitches  = coreSwitchNum();
+    
+    for (int i = 0; i < coreSwitches; i++) {
+        Identifier coreSwitchId = i;
+        for (int port = 0; port < 22; port++) {
+            Identifier aggSwitchId = coreSwitchNum()+port;
+            this->addEdge(nodeFromId(coreSwitchId), nodeFromId(aggSwitchId));
+        }//for
+    }//for
+}
+
 void KAryFatTree::connectCoreLevelToAggLevel_() {
     int pods          = podNum();
     int aggStartIndex = coreSwitchNum();

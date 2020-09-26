@@ -38,6 +38,7 @@ void checkArgs(int, int, int, string);
 int main(int argc, char * argv[]) {
     int    k, l, h;
     string o;
+    srand(time(NULL) );
     Options options(PROGRAM_NAME);
     try {
         parseArgs(argc, argv, options);
@@ -53,19 +54,19 @@ int main(int argc, char * argv[]) {
         cout << "# Nodes  : " << topology.nodeNum() << endl;
         cout << "# Hosts  : " << topology.hostNum() << endl;
         cout << "# Edges  : " << topology.edgeNum() << endl;
-        
+
         SubstrateGraph network(topology);
+        FlowGraph      Flowwork(topology);
         for (auto n = topology.hostIt(); n != INVALID; ++n) {
             network.capacity(n, h);
         }//for
-        
-        for (EdgeIt e(network); e != INVALID; ++e) {
+        for (EdgeIt e(network); e != INVALID; ++e ) {
             network.capacity(e, l);
             network.weight  (e, DEF_LINK_WEIGHT);
-            network.link    (e, 12);
         }//for
         
         GraphIO::writeGraph(network, o);
+        GraphIO::writeGraph(Flowwork,"flow.txt");
         cout << "Saved in : '" << o << "'!" << endl;
     }//try
     catch(invalid_argument inExc) {

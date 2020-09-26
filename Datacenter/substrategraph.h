@@ -23,13 +23,15 @@ public:
 #define NO_CAPACITY     0
 #define NO_WEIGHT       0
 #define NO_LINK         0
-#define INFINITE_WEIGHT INFINITY
+#define INFINITE_WEIGHT 0
     typedef NodeMap<Capacity> NodeCapacityMap;
     typedef ArcMap <Capacity> ArcCapacityMap;
     typedef EdgeMap<Capacity> EdgeCapacityMap;
     typedef ArcMap <Weight>   ArcWeight;
     typedef EdgeMap<Weight>   EdgeWeight;
-    typedef EdgeMap<Capacity> EdgeLink;
+    typedef EdgeMap<Link>     EdgeLink;
+    typedef EdgeMap<Link>     EdgeLink1;
+    
     NodeCapacityMap _nodeCapacity;
     NodeCapacityMap _nodeResidual;
     EdgeCapacityMap _edgeCapacity;
@@ -39,6 +41,7 @@ public:
     EdgeWeight      _edgeWeight;
     ArcWeight       _arcWeight;
     EdgeLink        _edgeLink;
+    EdgeLink1       _edgeLink1;
     
 public:
     SubstrateGraph();
@@ -50,6 +53,7 @@ public:
     virtual Weight   weight  (Edge e);
     virtual Weight   weight  (Arc  a);
     virtual Link     link    (Edge e);
+    virtual Link     link1    (Edge e);
     virtual Capacity residual(Node n);
     virtual Capacity residual(Edge e);
     virtual Capacity residual(Arc a);
@@ -60,6 +64,7 @@ public:
     virtual void     capacity(Edge e, Capacity amount);
     virtual void     capacity(Arc  a, Capacity amount);
     virtual void     link    (Edge e, Link amount);
+    virtual void     link1   (Edge e, Link amount);
     virtual void     weight  (Edge e, Weight w);
     virtual void     weight  (Arc  a, Weight w);
     virtual void     allocate(Node n, Capacity amount);

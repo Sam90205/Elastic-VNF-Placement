@@ -28,6 +28,7 @@ protected:
     void connectCoreLevelToAggLevel_();
     void connectAggLevelToEdgeLevel_();
     void connectEdgeLevelToHosts_();
+    void connectFlowCoreLevelToAggLevel_();
     void init_(int k);
     
 public:

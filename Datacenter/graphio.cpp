@@ -69,12 +69,13 @@ void GraphIO::writeGraph(KAryFatTree& g, string path) {
 
 void GraphIO::writeGraph(SubstrateGraph& g, ostream& os){
     GraphWriter<SubstrateGraph>(g, os).
-        nodeMap(NODE_CAP, g._nodeCapacity).
-        nodeMap(NODE_RES, g._nodeResidual).
-        edgeMap(EDGE_CAP, g._edgeCapacity).
-        edgeMap(EDGE_RES, g._edgeResidual).
-        edgeMap(EDGE_WEI, g._edgeWeight).
-        edgeMap(EDGE_LINK,g._edgeLink).
+        nodeMap(NODE_CAP,  g._nodeCapacity).
+        nodeMap(NODE_RES,  g._nodeResidual).
+        edgeMap(EDGE_LINK, g._edgeLink).
+        edgeMap(EDGE_LINK1,g._edgeLink1).
+        edgeMap(EDGE_CAP,  g._edgeCapacity).
+        edgeMap(EDGE_RES,  g._edgeResidual).
+        edgeMap(EDGE_WEI,  g._edgeWeight).
         run();
 }
 
@@ -83,6 +84,22 @@ void GraphIO::writeGraph(SubstrateGraph& g, string path){
     writeGraph(g, output);
     output.close();
 }
+void GraphIO::writeGraph(FlowGraph& g, ostream& os){
+    GraphWriter<FlowGraph>(g, os).
+        nodeMap(NODE_CAP,  g._nodeCapacity).
+        nodeMap(NODE_SUP,  g._nodeResidual).
+        edgeMap(NODE_DEM,  g._edgeLink    ).
+        edgeMap(EDGE_CAP,  g._edgeLink1   ).
+        edgeMap(EDGE_WEI,  g._edgeResidual).
+        run();
+}
+
+void GraphIO::writeGraph(FlowGraph& g, string path){
+    std::ofstream output(path.c_str());
+    writeGraph(g, output);
+    output.close();
+}
+
 
 //void GraphIO::writeGraph(FlowGraph& g, ostream& os){
 //    GraphWriter<FlowGraph>(g, os).
