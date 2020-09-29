@@ -36,9 +36,261 @@ void parseArgs(int, char*[], Options&);
 void checkArgs(int, int, int, string);
 
 int main(int argc, char * argv[]) {
-    int    k, l, h;
+    int    k, l, h , x ,y, z;
     string o;
+    vector<int>oldnode,newnode,StartNode,bridgeNode,EndNode,Nodenumber;
+    vector<vector<int>>oldflow,newflow;
+    bool repeat =false; int repeatcounter =0;
     srand(time(NULL) );
+    /* 指定亂數範圍 */
+    int Corenumber = 12  ;
+    int Aggnumber  = 22  ; 
+    int Accnumber  = 66  ; 
+    /* 產生 [min , max] 的整數亂數 */
+    /*for (int i = 0; i < 500 ; i++)
+    {
+       x = rand() % Corenumber +      0    ;  //core:12
+       y = rand() % Aggnumber  +      Corenumber   ;  //agg :22
+       z = rand() % Accnumber  +      Corenumber + Aggnumber   ;  //acc :66
+       StartNode .push_back(x);
+       bridgeNode.push_back(y);
+       EndNode   .push_back(z);
+    }*/
+
+    for (int j = 0; j < 2; j++)
+    {
+        oldnode.clear();
+        int counter = rand() % 5 + 1;
+        for (int i = 0; i < counter; i++)
+        {
+            x = rand() % Corenumber  +      0                        ;   //core:12
+            y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+            z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66           
+            if (i==0){
+                oldnode.push_back(x);
+            }
+            
+            for (int i = 0; i < oldnode.size(); i++)
+            { 
+                if (x==oldnode[i] || y == oldnode[i] || z == oldnode[i] ){
+                    repeat=true;
+                }
+            }
+            while (repeat==true)
+            {
+                x = rand() % Corenumber  +      0                        ;   //core:12
+                y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+                z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+                for (int i = 0; i < oldnode.size(); i++)
+                {
+                    if (x==oldnode[i] || y == oldnode[i] || z == oldnode[i] ){
+                        repeatcounter +=1;
+                    }
+                }
+                if (repeatcounter==0){
+                    repeat =false;
+                }
+                else
+                {
+                    repeat = true;
+                }
+                repeatcounter=0;
+            }
+            oldnode.push_back(y);
+            oldnode.push_back(z);
+            x = rand() % Corenumber  +      0                        ;   //core:12
+            y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+            z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+
+            for (int i = 0; i < oldnode.size(); i++) 
+                if (x==oldnode[i] || y == oldnode[i] || z == oldnode[i] )
+                    repeat=true;
+
+            while (repeat==true)
+            {
+                x = rand() % Corenumber  +      0                        ;   //core:12
+                y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+                z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+                for (int i = 0; i < oldnode.size(); i++)
+                {
+                    if (x==oldnode[i] || y == oldnode[i] || z == oldnode[i] ){
+                        repeatcounter +=1;
+                    }
+                }
+                if (repeatcounter==0){
+                    repeat =false;
+                }
+                else
+                {
+                    repeat = true;
+                }
+                repeatcounter=0;
+            }
+            
+            oldnode.push_back(y);
+            oldnode.push_back(x);
+            if (i==counter-1)
+            {
+                y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+                z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+                for (int i = 0; i < oldnode.size(); i++)
+                    if (y == oldnode[i] || z == oldnode[i] )
+                        repeat=true;
+                    
+                while (repeat==true)
+                {
+                    y = rand() % Aggnumber   +      Corenumber               ;   //agg :22 
+                    z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+                    for (int i = 0; i < oldnode.size(); i++)
+                        if (y == oldnode[i] || z == oldnode[i] )
+                            repeatcounter +=1;
+                        
+                    if (repeatcounter==0){
+                        repeat =false;
+                    }
+                    else
+                    {
+                        repeat = true;
+                    }
+                    repeatcounter=0;
+                }
+
+                oldnode.push_back(y);
+                oldnode.push_back(z);
+            }
+        }
+
+        oldflow.push_back(oldnode);
+    }
+    
+    //NewFlowGenerate-------------------------
+    int flowcounter=0;
+    int counter = rand() % 5 + 1;
+    for (int j= 0 ; j<oldflow.size();j++){
+        newnode.clear();
+        newnode.push_back(oldflow[j][0]);
+        for (int i = 0; i < counter; i++)
+        {
+            
+            x = rand() % Corenumber  +      0                        ;   //core:12 
+            y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+            z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+            for (int i = 0; i < newnode.size(); i++)
+            {
+                if (x == newnode[i] ||y == newnode[i] || z == newnode[i] || z == oldflow[j][oldflow[j].size()-1] ){
+                        repeat=true;
+                }
+            }
+            while (repeat==true)
+            {
+                x = rand() % Corenumber  +      0                        ;   //core:12
+                y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+                z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+                for (int i = 0; i < newnode.size(); i++)
+                {
+                    if (x == newnode[i] || y == newnode[i] || z == newnode[i] || z == oldflow[j][oldflow[j].size()-1] ){
+                        repeatcounter +=1;
+                    }
+                }
+                if (repeatcounter==0){
+                    repeat =false;
+                }
+                else
+                {
+                    repeat = true;
+                }
+                repeatcounter=0;
+            }
+            newnode.push_back(y);
+            newnode.push_back(z);
+            x = rand() % Corenumber  +      0                        ;   //core:12
+            y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+            z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+            for (int i = 0; i < newnode.size(); i++)
+                    if (x==newnode[i] || y == newnode[i] || z == newnode[i] || z == oldflow[j][oldflow[j].size()-1] )
+                        repeat=true;
+
+                while (repeat==true)
+                {
+                    x = rand() % Corenumber  +      0                        ;   //core:12
+                    y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+                    z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+                    for (int i = 0; i < newnode.size(); i++)
+                    {
+                        if (x==newnode[i] || y == newnode[i] || z == newnode[i] ){
+                            repeatcounter +=1;
+                        }
+                    }
+                    if (repeatcounter==0){
+                        repeat =false;
+                    }
+                    else
+                    {
+                        repeat = true;
+                    }
+                    repeatcounter=0;
+                }
+                newnode.push_back(y);
+                newnode.push_back(x);
+                x = rand() % Corenumber  +      0                        ;   //core:12
+                y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+                z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+                for (int i = 0; i < newnode.size(); i++)
+                    if (x==newnode[i] || y == newnode[i] || z == newnode[i] || z == oldflow[j][oldflow[j].size()-1] )
+                        repeat=true;
+
+                while (repeat==true)
+                {
+                    x = rand() % Corenumber  +      0                        ;   //core:12
+                    y = rand() % Aggnumber   +      Corenumber               ;   //agg :22
+                    z = rand() % Accnumber   +      Corenumber + Aggnumber   ;   //acc :66
+                    for (int i = 0; i < newnode.size(); i++)
+                    {
+                        if (x==newnode[i] || y == newnode[i] || z == newnode[i] || z == oldflow[j][oldflow[j].size()-1] ){
+                            repeatcounter +=1;
+                        }
+                    }
+                    if (repeatcounter==0){
+                        repeat =false;
+                    }
+                    else
+                    {
+                        repeat = true;
+                    }
+                    repeatcounter=0;
+                }
+                if (i == counter-1)
+                {
+                    newnode.push_back(y);
+                }
+        }
+        newnode.push_back(oldflow[j][oldflow[j].size()-1]);
+        newflow.push_back(newnode);
+    }
+
+   
+    
+    for (int i = 0; i < 1; i++)
+    {
+        for (int j = 0; j < oldflow[i].size(); j++)
+        {
+            cout<<oldflow[i][j]<< " ";
+        }
+        
+    }
+    cout <<endl;
+    for (int i = 0; i < 1; i++)
+    {
+        for (int j = 0; j < newflow[i].size(); j++)
+        {
+            cout<<newflow[i][j]<< " ";
+        }
+        
+    }
+        
+    cout<<endl;
+    
+
     Options options(PROGRAM_NAME);
     try {
         parseArgs(argc, argv, options);
