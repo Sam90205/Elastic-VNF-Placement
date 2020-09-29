@@ -56,7 +56,7 @@ int main(int argc, char * argv[]) {
         cout << "# Edges  : " << topology.edgeNum() << endl;
 
         SubstrateGraph network(topology);
-        FlowGraph      Flowwork(topology);
+        //FlowGraph      Flowwork(topology);
         for (auto n = topology.hostIt(); n != INVALID; ++n) {
             network.capacity(n, h);
         }//for
@@ -66,7 +66,7 @@ int main(int argc, char * argv[]) {
         }//for
         
         GraphIO::writeGraph(network, o);
-        GraphIO::writeGraph(Flowwork,"flow.txt");
+        //GraphIO::writeGraph(Flowwork,"flow.txt");
         cout << "Saved in : '" << o << "'!" << endl;
     }//try
     catch(invalid_argument inExc) {

@@ -9,19 +9,7 @@
 #include "fattree.h"
 #include <stdexcept>
 
-void KAryFatTree::connectFlowCoreLevelToAggLevel_() {
-    int pods          = podNum();
-    int aggStartIndex = coreSwitchNum();
-    int coreSwitches  = coreSwitchNum();
-    
-    for (int i = 0; i < coreSwitches; i++) {
-        Identifier coreSwitchId = i;
-        for (int port = 0; port < 22; port++) {
-            Identifier aggSwitchId = coreSwitchNum()+port;
-            this->addEdge(nodeFromId(coreSwitchId), nodeFromId(aggSwitchId));
-        }//for
-    }//for
-}
+
 
 void KAryFatTree::connectCoreLevelToAggLevel_() {
     int pods          = podNum();
@@ -43,14 +31,14 @@ void KAryFatTree::connectAggLevelToEdgeLevel_() {
     int aggSwitches    = aggSwitchNum(); // 22
     for (int i = 0; i < aggSwitches; i++) {
         Identifier aggSwitchId = aggStartIndex + i;
-        for (int port = 0; port < 2; port++) {
-            Identifier edgeSwitchId = edgeStartIndex + port + (i / 2) * 2;
+        for (int port = 0; port < 66; port++) {
+            Identifier edgeSwitchId = edgeStartIndex + port ;
             this->addEdge(nodeFromId(aggSwitchId), nodeFromId(edgeSwitchId));
         }//for
     }//for
 }
 
-void KAryFatTree::connectEdgeLevelToHosts_() {
+/*void KAryFatTree::connectEdgeLevelToHosts_() {
     int edgeStartIndex = coreSwitchNum() + aggSwitchNum();
     int hostStartIndex = coreSwitchNum() + aggSwitchNum() + edgeSwitchNum();
     int edgeSwitches   = edgeSwitchNum();
@@ -61,7 +49,7 @@ void KAryFatTree::connectEdgeLevelToHosts_() {
             this->addEdge(nodeFromId(edgeSwitchId), nodeFromId(hostId));
         }//for
     }//for
-}
+}*/
 
 void KAryFatTree::init_(int k) {
     _k = 4;
@@ -69,8 +57,7 @@ void KAryFatTree::init_(int k) {
     //Generate all nodes
     int nodes_count = coreSwitchNum() +
     aggSwitchNum () +
-    edgeSwitchNum() +
-    hostNum       ();
+    edgeSwitchNum() ;
     
     for (int i = 0; i < nodes_count; i++)
         this->addNode();
@@ -78,7 +65,7 @@ void KAryFatTree::init_(int k) {
     //Connect nodes to generate levels
     connectCoreLevelToAggLevel_();
     connectAggLevelToEdgeLevel_();
-    connectEdgeLevelToHosts_();
+    //connectEdgeLevelToHosts_();
 }
 
 KAryFatTree::KAryFatTree (int k) {
@@ -106,12 +93,12 @@ int KAryFatTree::aggSwitchNum() {
 }
 
 int KAryFatTree::edgeSwitchNum() {
-    return 22;
+    return 66;
     //return k() * k() / 2;
 }
 
 int KAryFatTree::hostNum() {
-    return 44;
+    return 0;
     //return edgeSwitchNum() * (k() / 2);
 }
 
