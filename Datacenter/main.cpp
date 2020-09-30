@@ -6,6 +6,11 @@
 //  Copyright (c) 2015 Milad Ghaznavi. All rights reserved.
 //
 
+
+
+
+
+
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -56,7 +61,6 @@ int main(int argc, char * argv[]) {
        bridgeNode.push_back(y);
        EndNode   .push_back(z);
     }*/
-
     for (int j = 0; j < 2; j++)
     {
         oldnode.clear();
@@ -263,6 +267,8 @@ int main(int argc, char * argv[]) {
                 {
                     newnode.push_back(y);
                 }
+                
+                //newnode.push_back(y);
         }
         newnode.push_back(oldflow[j][oldflow[j].size()-1]);
         newflow.push_back(newnode);
@@ -270,24 +276,19 @@ int main(int argc, char * argv[]) {
 
    
     
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 2; i++)
     {
         for (int j = 0; j < oldflow[i].size(); j++)
         {
             cout<<oldflow[i][j]<< " ";
         }
-        
-    }
-    cout <<endl;
-    for (int i = 0; i < 1; i++)
-    {
+        cout<<endl;
         for (int j = 0; j < newflow[i].size(); j++)
         {
             cout<<newflow[i][j]<< " ";
         }
-        
+        cout<<endl;
     }
-        
     cout<<endl;
     
 

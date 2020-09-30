@@ -69,3 +69,4 @@ The command run the experiment by reading the configuration file config.ini (`-c
 [2] Al-Fares, Mohammad, Alexander Loukissas, and Amin Vahdat. "A scalable, commodity data center network architecture." ACM SIGCOMM Computer Communication Review 38.4 (2008): 63-74.
 
 [3] Greenberg, Albert, et al. "VL2: a scalable and flexible data center network." ACM SIGCOMM computer communication review. Vol. 39. No. 4. ACM, 2009.
+
