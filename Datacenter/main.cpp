@@ -13,7 +13,7 @@
 #include "fattree.h"
 #include "graphio.h"
 #include "substrategraph.h"
-
+#include <ctime> 
 using namespace std;
 using namespace cxxopts;
 
@@ -36,6 +36,11 @@ void parseArgs(int, char*[], Options&);
 void checkArgs(int, int, int, string);
 
 int main(int argc, char * argv[]) {
+    vector<clock_t>countertimes;
+    for (int aa = 0; aa < 100; aa++)
+    {
+        clock_t a,b;
+        //vector<clock_t>countertimes;
     int    k, l, h , x ,y, z;
     string o;
     vector<int>oldnode,newnode,StartNode,bridgeNode,EndNode,Nodenumber;
@@ -56,7 +61,7 @@ int main(int argc, char * argv[]) {
        bridgeNode.push_back(y);
        EndNode   .push_back(z);
     }*/
-    int flownumber = 2 ;
+    int flownumber = 2000 ;
     for (int j = 0; j < flownumber; j++)
     {
         oldnode.clear();
@@ -270,9 +275,7 @@ int main(int argc, char * argv[]) {
         newflow.push_back(newnode);
     }
 
-   
-    
-    for (int i = 0; i < 2; i++)
+    /*for (int i = 0; i < 2; i++)
     {
         for (int j = 0; j < oldflow[i].size(); j++)
         {
@@ -286,7 +289,7 @@ int main(int argc, char * argv[]) {
         cout<<endl;
     }
     cout<<endl;
-    
+    */
     ///segment-------------
     vector<int>oldsegmentnode;
     vector<int>newsegmentnode;
@@ -357,69 +360,117 @@ int main(int argc, char * argv[]) {
                         }
                         newsegment.push_back(newsegmentnode);
                         newsegmentnode.clear();
-                        //cout<<newnoderecordstart << " "<<newnoderecordEnd <<endl;
                         newnoderecordstart=newnoderecordEnd;
                         break;
                     }               
                 }
-                
-               
-                /*for (int l = 0; l < linknodecounter; l++)
-                {
-                    newsegmentnode.push_back(newflow[i][linkStartnode]);
-                }
-                if (newsegmentnode.size()>=2)
-                {
-                    newsegment.push_back(newsegmentnode);
-                }*/
             }
         }
     }
-    for (int i = 0; i < oldsegment.size(); i++)
+    /*for (int i = 0; i < oldsegment.size(); i++)
     {
+        cout <<"(";
         for (int j = 0; j < oldsegment[i].size(); j++)
         {
              cout<<oldsegment[i][j]<<" " ;
         }
-        cout <<endl;
+        cout <<",";
         for (int j = 0; j < newsegment[i].size(); j++)
         {
              cout<<newsegment[i][j]<<" ";
         }
-        cout <<endl;
-    }
-   /* for (int i = 0; i < newsegment.size(); i++)
+        cout<<")"<<endl;
+        
+    }*/
+    vector<int> flowcapacity;
+    for (int i = 0; i < flownumber; i++)
     {
-        for (int j = 0; j < newsegment[i].size(); j++)
-        {
-             cout<<newsegment[i][j]<<" ";
-        }
-        cout <<endl;
+        int x = (rand() % 5) + 1 ;
+        flowcapacity.push_back(x);
     }
-    */
-    //cout<< segmentnodecounter<<endl;
+    
     Options options(PROGRAM_NAME);
     try {
         parseArgs(argc, argv, options);
         k = 4;
         l = 10;
-        h = 10;
+        h = 100000;
         o = "dc.txt";
 
         KAryFatTree topology(k);
-        cout << "K        : " << k                  << endl;
+        /*cout << "K        : " << k                  << endl;
         cout << "Link Cap.: " << l                  << endl;
         cout << "Host Cap.: " << h                  << endl;
         cout << "# Nodes  : " << topology.nodeNum() << endl;
         cout << "# Hosts  : " << topology.hostNum() << endl;
-        cout << "# Edges  : " << topology.edgeNum() << endl;
+        cout << "# Edges  : " << topology.edgeNum() << endl;*/
 
         SubstrateGraph network(topology);
         //FlowGraph      Flowwork(topology);
+        
         for (auto n = topology.hostIt(); n != INVALID; ++n) {
-            network.capacity(n, h);
-           // network.allocate(n, 10);
+            network.capacity(n, h);     
         }//for
+
+        for (int i = 0; i < oldflow.size(); i++)
+        {
+            for (int j = 0; j < oldflow[i].size(); j++)
+            {
+                int k=99;
+                for (auto n = topology.hostIt(); n != INVALID; ++n ,k--)
+                {
+                    if (k==newflow[i][j])
+                    {
+                        network.allocate(n,flowcapacity[i]);
+                    }
+                }           
+            }
+        }
+        
+
+        for (int i = 0; i < flownumber; i++)
+        {
+            for (int j = 0; j < newflow[i].size(); j++)
+            {
+                int k=99;
+                for (auto n = topology.hostIt(); n != INVALID; ++n ,k--)
+                {
+                    if (k==newflow[i][j])
+                    {
+                        network.allocate(n,flowcapacity[i]);
+                    }
+                } 
+                int l=99;
+                for (auto n = topology.hostIt(); n != INVALID; ++n ,l--)
+                {
+                    if (l==newflow[i][j])
+                    {
+                        network.release(n,flowcapacity[i]);
+                    }
+                }       
+            }
+            
+        }
+        
+        for (int i = 0; i < oldflow.size(); i++)
+        {
+            for (int j = 0; j < oldflow[i].size(); j++)
+            {
+                int k=99;
+                for (auto n = topology.hostIt(); n != INVALID; ++n ,k--)
+                {
+                    if (k==newflow[i][j])
+                    {
+                        //network.release(n,flowcapacity[i]);
+                    }
+                }           
+            }
+        }
+    a=clock(); 
+    countertimes.push_back(a);
+    
+    cout <<countertimes[aa]- countertimes[aa-1] <<endl;
+
         for (EdgeIt e(network); e != INVALID; ++e ) {
             network.capacity(e, l);
             network.weight  (e, DEF_LINK_WEIGHT);
@@ -427,7 +478,7 @@ int main(int argc, char * argv[]) {
         
         GraphIO::writeGraph(network, o);
         //GraphIO::writeGraph(Flowwork,"flow.txt");
-        cout << "Saved in : '" << o << "!" << endl;
+        //cout << "Saved in : '" << o << "!" << endl;
     }//try
     catch(invalid_argument inExc) {
         cerr << inExc.what() << endl;
@@ -437,8 +488,9 @@ int main(int argc, char * argv[]) {
         cerr << options.help() << endl;
         exit(-1);
     }//catch
-
+    }
     return 0;
+    
 }
 
 void parseArgs(int argc, char* argv[], Options& options) {
