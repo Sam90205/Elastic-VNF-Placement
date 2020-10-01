@@ -6,11 +6,6 @@
 //  Copyright (c) 2015 Milad Ghaznavi. All rights reserved.
 //
 
-
-
-
-
-
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -61,7 +56,8 @@ int main(int argc, char * argv[]) {
        bridgeNode.push_back(y);
        EndNode   .push_back(z);
     }*/
-    for (int j = 0; j < 2; j++)
+    int flownumber = 2 ;
+    for (int j = 0; j < flownumber; j++)
     {
         oldnode.clear();
         int counter = rand() % 5 + 1;
@@ -291,7 +287,69 @@ int main(int argc, char * argv[]) {
     }
     cout<<endl;
     
+    ///segment-------------
+    vector<int>oldsegmentnode;
+    vector<int>newsegmentnode;
+    vector<vector<int>>oldsegment;
+    vector<vector<int>>newsegment;
+    int segmentnodecounter=0;
+    int oldnoderecordstart=0;
+    int oldnoderecordEnd  =0;
+    int newnoderecordstart=0;
+    int newnoderecordEnd  =0;
+    bool Pushnode          =false;
+    for (int i = 0; i < newflow.size(); i++)
+    {
+        int linkStartnode  =0;
+        for (int j = 0; j < newflow[i].size()-1; j++)
+        {
+            newsegmentnode.clear();
+            newnoderecordstart=newflow[i][j]; //2
+            for (int m = j; m < newflow[i].size()-1; m++)
+            {
+                newnoderecordEnd  =newflow[i][m+1];//12
+                //newnoderecordEnd  =newflow[i][j+1];//12
+                int linknodecounter=0;
 
+                for (int k = linkStartnode; k < oldflow[i].size(); k++)
+                {
+                    if (newnoderecordstart==oldflow[i][k])
+                    {
+                        oldnoderecordstart=oldflow[i][k];
+                    }
+                    linknodecounter+=1;
+                    if (newnoderecordEnd==oldflow[i][k])
+                    {
+                        oldnoderecordEnd=oldflow[i][k];
+                        linkStartnode +=linknodecounter;
+                        cout<<newnoderecordstart << " "<<newnoderecordEnd <<endl;
+                        newnoderecordstart=newnoderecordEnd;
+                        break;
+                    }               
+                }
+                
+               
+                /*for (int l = 0; l < linknodecounter; l++)
+                {
+                    newsegmentnode.push_back(newflow[i][linkStartnode]);
+                }
+                if (newsegmentnode.size()>=2)
+                {
+                    newsegment.push_back(newsegmentnode);
+                }*/
+            }
+        }
+    }
+    /*for (int i = 0; i < newsegment.size(); i++)
+    {
+        for (int j = 0; j < newsegment[i].size(); j++)
+        {
+             cout<<newsegmentnode[j]<<" ";
+        }
+        cout <<endl;
+    }*/
+    
+    //cout<< segmentnodecounter<<endl;
     Options options(PROGRAM_NAME);
     try {
         parseArgs(argc, argv, options);
@@ -312,6 +370,7 @@ int main(int argc, char * argv[]) {
         //FlowGraph      Flowwork(topology);
         for (auto n = topology.hostIt(); n != INVALID; ++n) {
             network.capacity(n, h);
+           // network.allocate(n, 10);
         }//for
         for (EdgeIt e(network); e != INVALID; ++e ) {
             network.capacity(e, l);
@@ -320,7 +379,7 @@ int main(int argc, char * argv[]) {
         
         GraphIO::writeGraph(network, o);
         //GraphIO::writeGraph(Flowwork,"flow.txt");
-        cout << "Saved in : '" << o << "'!" << endl;
+        cout << "Saved in : '" << o << "!" << endl;
     }//try
     catch(invalid_argument inExc) {
         cerr << inExc.what() << endl;
@@ -342,6 +401,9 @@ void parseArgs(int argc, char* argv[], Options& options) {
         (OUTPUT_OPT   "," L_OUTPUT_OPT  , "Output File (Default is dc.txt)"  , value<string>());
     options.parse(argc, argv);
 }
+
+
+
 
 void checkArgs(int k, int l, int h, string o) {
     if (k < 0) {
