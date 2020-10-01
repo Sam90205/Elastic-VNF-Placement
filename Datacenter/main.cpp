@@ -322,7 +322,42 @@ int main(int argc, char * argv[]) {
                     {
                         oldnoderecordEnd=oldflow[i][k];
                         linkStartnode +=linknodecounter;
-                        cout<<newnoderecordstart << " "<<newnoderecordEnd <<endl;
+                        for (int l = 0; l < oldflow[i].size() ; l++)
+                        {
+                            if (oldflow[i][l]==newnoderecordstart)
+                            {
+                                Pushnode=true;
+                            }
+                            if (Pushnode==true)
+                            {
+                                oldsegmentnode.push_back(oldflow[i][l]);
+                            }
+                            if (oldflow[i][l]==newnoderecordEnd)
+                            {
+                                Pushnode=false;
+                            }
+                        }
+                        oldsegment.push_back(oldsegmentnode);
+                        oldsegmentnode.clear();
+
+                        for (int l = 0; l < newflow[i].size() ; l++)
+                        {
+                            if (newflow[i][l]==newnoderecordstart)
+                            {
+                                Pushnode=true;
+                            }
+                            if (Pushnode==true)
+                            {
+                                newsegmentnode.push_back(newflow[i][l]);
+                            }
+                            if (newflow[i][l]==newnoderecordEnd)
+                            {
+                                Pushnode=false;
+                            }
+                        }
+                        newsegment.push_back(newsegmentnode);
+                        newsegmentnode.clear();
+                        //cout<<newnoderecordstart << " "<<newnoderecordEnd <<endl;
                         newnoderecordstart=newnoderecordEnd;
                         break;
                     }               
@@ -340,15 +375,28 @@ int main(int argc, char * argv[]) {
             }
         }
     }
-    /*for (int i = 0; i < newsegment.size(); i++)
+    for (int i = 0; i < oldsegment.size(); i++)
+    {
+        for (int j = 0; j < oldsegment[i].size(); j++)
+        {
+             cout<<oldsegment[i][j]<<" " ;
+        }
+        cout <<endl;
+        for (int j = 0; j < newsegment[i].size(); j++)
+        {
+             cout<<newsegment[i][j]<<" ";
+        }
+        cout <<endl;
+    }
+   /* for (int i = 0; i < newsegment.size(); i++)
     {
         for (int j = 0; j < newsegment[i].size(); j++)
         {
-             cout<<newsegmentnode[j]<<" ";
+             cout<<newsegment[i][j]<<" ";
         }
         cout <<endl;
-    }*/
-    
+    }
+    */
     //cout<< segmentnodecounter<<endl;
     Options options(PROGRAM_NAME);
     try {
