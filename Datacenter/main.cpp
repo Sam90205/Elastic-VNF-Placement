@@ -37,13 +37,12 @@ void checkArgs(int, int, int, string);
 
 int main(int argc, char * argv[]) {
     vector<clock_t>countertimes;
-    for (int aa = 0; aa < 100; aa++)
+    for (int aa = 0; aa < 1; aa++)
     {
-        clock_t a,b;
-        //vector<clock_t>countertimes;
+    clock_t a,b;
     int    k, l, h , x ,y, z;
     string o;
-    vector<int>oldnode,newnode,StartNode,bridgeNode,EndNode,Nodenumber;
+    vector<int>oldnode,newnode,Nodenumber;
     vector<vector<int>>oldflow,newflow;
     bool repeat =false; int repeatcounter =0;
     srand(time(NULL) );
@@ -51,17 +50,7 @@ int main(int argc, char * argv[]) {
     int Corenumber = 12  ;
     int Aggnumber  = 22  ; 
     int Accnumber  = 66  ; 
-    /* 產生 [min , max] 的整數亂數 */
-    /*for (int i = 0; i < 500 ; i++)
-    {
-       x = rand() % Corenumber +      0    ;  //core:12
-       y = rand() % Aggnumber  +      Corenumber   ;  //agg :22
-       z = rand() % Accnumber  +      Corenumber + Aggnumber   ;  //acc :66
-       StartNode .push_back(x);
-       bridgeNode.push_back(y);
-       EndNode   .push_back(z);
-    }*/
-    int flownumber = 2000 ;
+    int flownumber = 1000 ;
     for (int j = 0; j < flownumber; j++)
     {
         oldnode.clear();
@@ -274,33 +263,17 @@ int main(int argc, char * argv[]) {
         newnode.push_back(oldflow[j][oldflow[j].size()-1]);
         newflow.push_back(newnode);
     }
-
-    /*for (int i = 0; i < 2; i++)
-    {
-        for (int j = 0; j < oldflow[i].size(); j++)
-        {
-            cout<<oldflow[i][j]<< " ";
-        }
-        cout<<endl;
-        for (int j = 0; j < newflow[i].size(); j++)
-        {
-            cout<<newflow[i][j]<< " ";
-        }
-        cout<<endl;
-    }
-    cout<<endl;
-    */
     ///segment-------------
-    vector<int>oldsegmentnode;
-    vector<int>newsegmentnode;
-    vector<vector<int>>oldsegment;
-    vector<vector<int>>newsegment;
-    int segmentnodecounter=0;
-    int oldnoderecordstart=0;
-    int oldnoderecordEnd  =0;
-    int newnoderecordstart=0;
-    int newnoderecordEnd  =0;
-    bool Pushnode          =false;
+    b=clock();
+    vector<int>oldsegmentnode,newsegmentnode;
+    vector<vector<int>>oldsegment,newsegment;
+    vector<vector<vector<int>>>oldtotalsegment,newtotalsegment;
+    int  segmentnodecounter =0;
+    int  oldnoderecordstart =0;
+    int  oldnoderecordEnd   =0;
+    int  newnoderecordstart =0;
+    int  newnoderecordEnd   =0;
+    bool Pushnode           =false;
     for (int i = 0; i < newflow.size(); i++)
     {
         int linkStartnode  =0;
@@ -342,7 +315,6 @@ int main(int argc, char * argv[]) {
                         }
                         oldsegment.push_back(oldsegmentnode);
                         oldsegmentnode.clear();
-
                         for (int l = 0; l < newflow[i].size() ; l++)
                         {
                             if (newflow[i][l]==newnoderecordstart)
@@ -366,26 +338,20 @@ int main(int argc, char * argv[]) {
                 }
             }
         }
-    }
-    /*for (int i = 0; i < oldsegment.size(); i++)
-    {
-        cout <<"(";
-        for (int j = 0; j < oldsegment[i].size(); j++)
-        {
-             cout<<oldsegment[i][j]<<" " ;
-        }
-        cout <<",";
-        for (int j = 0; j < newsegment[i].size(); j++)
-        {
-             cout<<newsegment[i][j]<<" ";
-        }
-        cout<<")"<<endl;
         
-    }*/
+        oldtotalsegment.push_back(oldsegment);
+        
+        oldsegment.clear();
+        
+        newtotalsegment.push_back(newsegment);
+        
+        newsegment.clear();
+    }
+    cout <<endl;
     vector<int> flowcapacity;
     for (int i = 0; i < flownumber; i++)
     {
-        int x = (rand() % 5) + 1 ;
+        int x = (rand() % 3) + 1 ;
         flowcapacity.push_back(x);
     }
     
@@ -411,15 +377,46 @@ int main(int argc, char * argv[]) {
         for (auto n = topology.hostIt(); n != INVALID; ++n) {
             network.capacity(n, h);     
         }//for
+        int s=99;
+        for (auto n = topology.hostIt(); n != INVALID; ++n,--s) {
 
-        for (int i = 0; i < oldflow.size(); i++)
+            network.capacity(n, h);     
+        }//for
+        
+        for (int i = 0; i < oldtotalsegment.size(); i++)
+        {
+            for (int j = 0; j < oldtotalsegment[i].size(); j++)
+            {
+                
+                for (int k = 0; k < oldtotalsegment[i][j].size(); k++)
+                {
+                    cout <<oldtotalsegment[i][j][k]<<" ";
+                    int l=99;
+                    for (auto n = topology.hostIt(); n != INVALID; ++n ,l--)
+                    {
+                        if (l==oldtotalsegment[i][j][k])
+                        {
+                         network.allocate(n,flowcapacity[i]);
+                        }
+                    }
+                    
+                }
+                
+            }
+            cout <<endl;
+        }
+        
+
+
+        ///nodeupdate
+        /*for (int i = 0; i < oldflow.size(); i++)
         {
             for (int j = 0; j < oldflow[i].size(); j++)
             {
                 int k=99;
                 for (auto n = topology.hostIt(); n != INVALID; ++n ,k--)
                 {
-                    if (k==newflow[i][j])
+                    if (k==oldflow[i][j])
                     {
                         network.allocate(n,flowcapacity[i]);
                     }
@@ -427,7 +424,6 @@ int main(int argc, char * argv[]) {
             }
         }
         
-
         for (int i = 0; i < flownumber; i++)
         {
             for (int j = 0; j < newflow[i].size(); j++)
@@ -439,37 +435,42 @@ int main(int argc, char * argv[]) {
                     {
                         network.allocate(n,flowcapacity[i]);
                     }
-                } 
-                int l=99;
-                for (auto n = topology.hostIt(); n != INVALID; ++n ,l--)
-                {
-                    if (l==newflow[i][j])
-                    {
-                        network.release(n,flowcapacity[i]);
-                    }
-                }       
+                }   
             }
-            
-        }
-        
-        for (int i = 0; i < oldflow.size(); i++)
-        {
-            for (int j = 0; j < oldflow[i].size(); j++)
+            for (int j = oldflow[i].size()-1; j > 0 ; j--)
             {
                 int k=99;
                 for (auto n = topology.hostIt(); n != INVALID; ++n ,k--)
                 {
-                    if (k==newflow[i][j])
+                    if (k==oldflow[i][j])
                     {
-                        //network.release(n,flowcapacity[i]);
+                        network.release(n,flowcapacity[i]);
                     }
-                }           
+                }   
             }
         }
+        */
     a=clock(); 
     countertimes.push_back(a);
-    
-    cout <<countertimes[aa]- countertimes[aa-1] <<endl;
+    //cout <<a;
+   /* for (int ii = 0; ii < oldtotalsegment[0].size(); ii++)
+    {
+        for (int jj = 0; jj < oldtotalsegment[0][ii].size(); jj++)
+        {
+            cout << oldtotalsegment[0][ii][jj]<<" ";
+        }
+    }
+    cout <<endl;
+    for (int ii = 0; ii < newtotalsegment[0].size(); ii++)
+    {
+        for (int jj = 0; jj < newtotalsegment[0][ii].size(); jj++)
+        {
+            cout << newtotalsegment[0][ii][jj]<<" ";
+        }
+    }
+    */
+    cout <<endl;
+    //cout <<(countertimes[aa]- countertimes[aa-1]) <<endl;
 
         for (EdgeIt e(network); e != INVALID; ++e ) {
             network.capacity(e, l);
