@@ -37,8 +37,11 @@ void checkArgs(int, int, int, string);
 
 int main(int argc, char * argv[]) {
     vector<clock_t>countertimes;
+    int result=0;
+    ofstream UpdateTimeout ("UpdateTimeout.txt");
     for (int aa = 0; aa < 1; aa++)
     {
+    ofstream FlowData ("FlowData.txt");
     clock_t a,b;
     int    k, l, h , x ,y, z;
     string o;
@@ -263,8 +266,22 @@ int main(int argc, char * argv[]) {
         newnode.push_back(oldflow[j][oldflow[j].size()-1]);
         newflow.push_back(newnode);
     }
-    ///segment-------------
+    FlowData<<"Old Flow"<<endl;
+    for (int i = 0; i < oldflow.size(); i++)
+    {
+        for (int j = 0; j < oldflow[i].size(); j++)
+        {
+            FlowData<<oldflow[i][j]<<" ";
+        }
+        FlowData <<endl;
+        for (int j = 0; j < newflow[i].size(); j++)
+        {
+           FlowData<<newflow[i][j]<<" ";
+        }
+        FlowData<<endl;
+    }
     b=clock();
+    ///segment-------------
     vector<int>oldsegmentnode,newsegmentnode;
     vector<vector<int>>oldsegment,newsegment;
     vector<vector<vector<int>>>oldtotalsegment,newtotalsegment;
@@ -338,16 +355,12 @@ int main(int argc, char * argv[]) {
                 }
             }
         }
-        
         oldtotalsegment.push_back(oldsegment);
-        
         oldsegment.clear();
-        
         newtotalsegment.push_back(newsegment);
-        
         newsegment.clear();
     }
-    cout <<endl;
+    //cout <<endl;
     vector<int> flowcapacity;
     for (int i = 0; i < flownumber; i++)
     {
@@ -390,10 +403,16 @@ int main(int argc, char * argv[]) {
                 
                 for (int k = 0; k < oldtotalsegment[i][j].size(); k++)
                 {
-                    cout <<oldtotalsegment[i][j][k]<<" ";
+                    //cout <<oldtotalsegment[i][j][k]<<" ";
                     int l=99;
                     for (auto n = topology.hostIt(); n != INVALID; ++n ,l--)
                     {
+                        int capacityadjust = network.residual(n);
+                        if (capacityadjust <1000)
+                        {
+                            flowcapacity[i]=0.5;
+                        }
+                        
                         if (l==oldtotalsegment[i][j][k])
                         {
                          network.allocate(n,flowcapacity[i]);
@@ -403,19 +422,17 @@ int main(int argc, char * argv[]) {
                 }
                 
             }
-            cout <<endl;
+            //cout <<endl;
         }
-        
-
-
         ///nodeupdate
-        /*for (int i = 0; i < oldflow.size(); i++)
+        for (int i = 0; i < oldflow.size(); i++)
         {
             for (int j = 0; j < oldflow[i].size(); j++)
             {
                 int k=99;
                 for (auto n = topology.hostIt(); n != INVALID; ++n ,k--)
                 {
+                    
                     if (k==oldflow[i][j])
                     {
                         network.allocate(n,flowcapacity[i]);
@@ -449,10 +466,10 @@ int main(int argc, char * argv[]) {
                 }   
             }
         }
-        */
+        
     a=clock(); 
     countertimes.push_back(a);
-    //cout <<a;
+    cout <<a-b<<endl;
    /* for (int ii = 0; ii < oldtotalsegment[0].size(); ii++)
     {
         for (int jj = 0; jj < oldtotalsegment[0][ii].size(); jj++)
@@ -469,9 +486,10 @@ int main(int argc, char * argv[]) {
         }
     }
     */
-    cout <<endl;
+   //cout <<endl;
     //cout <<(countertimes[aa]- countertimes[aa-1]) <<endl;
-
+    UpdateTimeout<< (countertimes[aa]- countertimes[aa-1]) <<endl;
+    
         for (EdgeIt e(network); e != INVALID; ++e ) {
             network.capacity(e, l);
             network.weight  (e, DEF_LINK_WEIGHT);
