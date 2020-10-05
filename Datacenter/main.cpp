@@ -39,7 +39,7 @@ int main(int argc, char * argv[]) {
     vector<clock_t>countertimes;
     int result=0;
     ofstream UpdateTimeout ("UpdateTimeout.txt");
-    for (int aa = 0; aa < 1; aa++)
+    for (int aa = 0; aa < 30; aa++)
     {
     ofstream FlowData ("FlowData.txt");
     clock_t a,b;
