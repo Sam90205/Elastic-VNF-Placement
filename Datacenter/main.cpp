@@ -16,7 +16,6 @@
 #include <ctime> 
 using namespace std;
 using namespace cxxopts;
-
 #define PROGRAM_NAME    "dc"
 #define K_OPT           "k"
 #define L_K_OPT         "kparam"
@@ -38,8 +37,9 @@ void checkArgs(int, int, int, string);
 int main(int argc, char * argv[]) {
     vector<clock_t>countertimes;
     int result=0;
-    ofstream UpdateTimeout ("UpdateTimeout.txt");
-    for (int aa = 0; aa < 30; aa++)
+    ofstream UpdateTimeout ("UpdateTimeout10000.txt");
+    UpdateTimeout << 0 << " " << 0 << endl;
+    for (int aa = 0; aa < 1; aa++)
     {
     ofstream FlowData ("FlowData.txt");
     clock_t a,b;
@@ -53,11 +53,11 @@ int main(int argc, char * argv[]) {
     int Corenumber = 12  ;
     int Aggnumber  = 22  ; 
     int Accnumber  = 66  ; 
-    int flownumber = 1000 ;
+    int flownumber = 10000 ;
     for (int j = 0; j < flownumber; j++)
     {
         oldnode.clear();
-        int counter = rand() % 5 + 1;
+        int counter = 1;
         for (int i = 0; i < counter; i++)
         {
             x = rand() % Corenumber  +      0                        ;   //core:12
@@ -162,7 +162,7 @@ int main(int argc, char * argv[]) {
     
     //NewFlowGenerate-------------------------
     int flowcounter=0;
-    int counter = rand() % 5 + 1;
+    int counter    =1;
     for (int j= 0 ; j<oldflow.size();j++){
         newnode.clear();
         newnode.push_back(oldflow[j][0]);
@@ -280,7 +280,7 @@ int main(int argc, char * argv[]) {
         }
         FlowData<<endl;
     }
-    b=clock();
+    a = clock();
     ///segment-------------
     vector<int>oldsegmentnode,newsegmentnode;
     vector<vector<int>>oldsegment,newsegment;
@@ -359,15 +359,178 @@ int main(int argc, char * argv[]) {
         oldsegment.clear();
         newtotalsegment.push_back(newsegment);
         newsegment.clear();
-    }
-    //cout <<endl;
+    } 
+     ////sort 
     vector<int> flowcapacity;
+    int tmp =0;
+    vector<int>tmpoldflow;
+    vector<int>tmpnewflow;
     for (int i = 0; i < flownumber; i++)
     {
-        int x = (rand() % 3) + 1 ;
-        flowcapacity.push_back(x);
+        int x = (rand() % 10) + 1 ;
+        //int x = 10  ;
+        flowcapacity.push_back(x); // changefk
     }
+    ////sort 
+    for (int i = 0; i < flownumber; i++)
+    {
+        for (int j = 0; j < flownumber; j++)
+        {
+            if( flowcapacity[j] < flowcapacity[j+1])
+            {
+
+            tmp = flowcapacity [j];
+            flowcapacity[j] = flowcapacity[j+1];
+            flowcapacity[j+1] = tmp;
+            
+            tmpoldflow=oldflow[j];
+            oldflow[j]=oldflow[j+1];
+            oldflow[j+1]=tmpoldflow;
+
+            tmpoldflow=newflow[j];
+            newflow[j]=newflow[j+1];
+            newflow[j+1]=tmpoldflow;   
+            }
+        }
+    }
+    //sorted segment capacity 
+    vector<int>segmentnodecapacity;
+    vector<vector<int>>segmentcapacity;
+    for (int i = 0; i < oldtotalsegment.size(); i++)
+    {
+        segmentnodecapacity.clear();
+        for (int j = 0; j < oldtotalsegment[i].size(); j++)
+        {
+            segmentnodecapacity.push_back(flowcapacity[i]); //1000M=1G(bps);
+        }
+        segmentcapacity.push_back(segmentnodecapacity);
+    }
+    vector<int>tmpnodecapaity(100,1000);
+    //cout <<oldtotalsegment.size()<<endl;
+    bool pass=false;
+    int pcounter =0;
+    int totalcounter  =0;
+    for (int i = 0; i < segmentcapacity.size(); i++)
+    {
+        for (int j = 0; j < segmentcapacity[i].size(); j++)
+        {
+                totalcounter+=1;
+        }
+        
+    }
+    while (pass != true)
+    {
+        int pcounter=0;
+        //system("pause");
+        vector<int>tmpnodecapaity(100,1000); //AvlBW ,segmentcapacity:TxBw
+        bool updaterecord=false;
+        
+        
+        for (int i = 0; i < oldtotalsegment.size(); i++)
+        {
+            for (int j = 0; j < oldtotalsegment[i].size(); j++)
+            {
+                for (int k = 0; k < oldtotalsegment[i][j].size(); k++)
+                {
+                    if (tmpnodecapaity[oldtotalsegment[i][j][k]]>segmentcapacity[i][j] && segmentcapacity[i][j] != 0 )
+                    {
+                        tmpnodecapaity[oldtotalsegment[i][j][k]]-=segmentcapacity[i][j];
+                        segmentcapacity[i][j] = 0;
+                        updaterecord =true;
+
+                    }
+                }
+            }
+        }
+        
+        
+        int recordlocationx ,recordlocationy,recordlocationz ;
+        int comparetmp=9999;
+        if (updaterecord ==false)
+        {
+            for (int i = 0; i < oldtotalsegment.size(); i++)
+            {
+                for (int j = 0; j < oldtotalsegment[i].size(); j++)
+                {
+                    for (int k = 0; k < oldtotalsegment[i][j].size(); k++)
+                    {
+                        if (tmpnodecapaity[oldtotalsegment[i][j][k]]<segmentcapacity[i][j] && segmentcapacity[i][j] != 0 )
+                        {
+                            if (tmpnodecapaity[oldtotalsegment[i][j][k]]<comparetmp)
+                            {
+                                comparetmp=tmpnodecapaity[oldtotalsegment[i][j][k]];
+                                recordlocationx=i;
+                                recordlocationy=j;
+                                recordlocationz=k;
+                            }
+                        }
+                    }                  
+                        //oldtotalsegment[i][j].erase(oldtotalsegment[i][j].begin(),oldtotalsegment[i][j].begin()+oldtotalsegment[i][j].size());  
+                }
+            }
+            double yr = 0   ;
+                   //yr = 1 - (double) tmpnodecapaity[oldtotalsegment[recordlocationx][recordlocationy][recordlocationz]] / segmentcapacity[recordlocationx][recordlocationy] ;
+                   //cout << yr <<endl;
+            for (int i = 0; i < segmentcapacity.size(); i++)
+            {
+                for (int j = 0; j < segmentcapacity[i].size(); j++)
+                {
+                    if (segmentcapacity[i][j]!=0)
+                    {
+                        segmentcapacity[i][j]=yr;
+                    }
+                }
+            }  
+        }
+       
+        pass=true;
+        for (int l = 0; l < segmentcapacity.size(); l++)
+        {
+            for (int m = 0; m < segmentcapacity[l].size(); m++)
+            {
+                if (segmentcapacity[l][m] != 0)
+                {
+                    pass =false;
+                }
+            }
+        }
+       // cout << yr;
+        b=clock();
+        for (int i = 0; i < segmentcapacity.size(); i++)
+        {
+         for (int j = 0; j < segmentcapacity[i].size(); j++)
+            {
+                if (segmentcapacity[i][j]==0)
+                {
+                    pcounter++;
+                }
+            }
+        }
+        //UpdateTimeout << pcounter << "  " << totalcounter << " " << ;
+        UpdateTimeout << ((float) pcounter/totalcounter ) *100  <<" " << b/1000 <<endl;
+        cout  << pcounter << "  " << totalcounter << " " << (float) pcounter/totalcounter  <<" " <<pass<< " " << b-a <<endl;
+        //tmpnodecapaity.clear();
+    }
+
+    //cout << oldtotalsegment.size()<<" " <<endl;
+    /*for (int i = 0; i < segmentcapacity.size(); i++)
+    {
+        for (int j = 0; j < segmentcapacity[i].size(); j++)
+        {
+            cout<<segmentcapacity[i][j]<< " ";
+        }
+        cout <<endl;
+    }
+    */
+     //cout << oldtotalsegment.size()<<endl;
+    /*for (int i = 0; i < 100 ; i++)
+    {
+        cout<<tmpnodecapaity[i]<<" ";
+    }
+    */
+    cout <<endl;
     
+    //b=clock();
     Options options(PROGRAM_NAME);
     try {
         parseArgs(argc, argv, options);
@@ -377,16 +540,18 @@ int main(int argc, char * argv[]) {
         o = "dc.txt";
 
         KAryFatTree topology(k);
-        /*cout << "K        : " << k                  << endl;
+        /*
+        cout << "K        : " << k                  << endl;
         cout << "Link Cap.: " << l                  << endl;
         cout << "Host Cap.: " << h                  << endl;
         cout << "# Nodes  : " << topology.nodeNum() << endl;
         cout << "# Hosts  : " << topology.hostNum() << endl;
-        cout << "# Edges  : " << topology.edgeNum() << endl;*/
+        cout << "# Edges  : " << topology.edgeNum() << endl;
+        */
 
         SubstrateGraph network(topology);
         //FlowGraph      Flowwork(topology);
-        
+        /*
         for (auto n = topology.hostIt(); n != INVALID; ++n) {
             network.capacity(n, h);     
         }//for
@@ -394,13 +559,15 @@ int main(int argc, char * argv[]) {
         for (auto n = topology.hostIt(); n != INVALID; ++n,--s) {
 
             network.capacity(n, h);     
-        }//for
-        
+        }
+        */
+        //for
+        //
+        /*
         for (int i = 0; i < oldtotalsegment.size(); i++)
         {
             for (int j = 0; j < oldtotalsegment[i].size(); j++)
             {
-                
                 for (int k = 0; k < oldtotalsegment[i][j].size(); k++)
                 {
                     //cout <<oldtotalsegment[i][j][k]<<" ";
@@ -424,7 +591,10 @@ int main(int argc, char * argv[]) {
             }
             //cout <<endl;
         }
+        */
+        ////----------------------------------------------------------------------------------------------------
         ///nodeupdate
+        /*
         for (int i = 0; i < oldflow.size(); i++)
         {
             for (int j = 0; j < oldflow[i].size(); j++)
@@ -432,7 +602,6 @@ int main(int argc, char * argv[]) {
                 int k=99;
                 for (auto n = topology.hostIt(); n != INVALID; ++n ,k--)
                 {
-                    
                     if (k==oldflow[i][j])
                     {
                         network.allocate(n,flowcapacity[i]);
@@ -440,6 +609,7 @@ int main(int argc, char * argv[]) {
                 }           
             }
         }
+        
         
         for (int i = 0; i < flownumber; i++)
         {
@@ -466,15 +636,19 @@ int main(int argc, char * argv[]) {
                 }   
             }
         }
+        */
         
-    a=clock(); 
-    countertimes.push_back(a);
-    cout <<a-b<<endl;
-   /* for (int ii = 0; ii < oldtotalsegment[0].size(); ii++)
+    /*a=clock(); 
+    countertimes.push_back(a);*/
+    //cout <<a-b<<endl;
+    /*for (int kk = 0; kk < oldtotalsegment.size(); kk++)
     {
-        for (int jj = 0; jj < oldtotalsegment[0][ii].size(); jj++)
+        for (int ii = 0; ii < oldtotalsegment[0].size(); ii++)
         {
-            cout << oldtotalsegment[0][ii][jj]<<" ";
+            for (int jj = 0; jj < oldtotalsegment[0][ii].size(); jj++)
+            {
+                cout << oldtotalsegment[0][ii][jj]<<" ";
+            }
         }
     }
     cout <<endl;
@@ -488,14 +662,14 @@ int main(int argc, char * argv[]) {
     */
    //cout <<endl;
     //cout <<(countertimes[aa]- countertimes[aa-1]) <<endl;
-    UpdateTimeout<< (countertimes[aa]- countertimes[aa-1]) <<endl;
-    
+    //UpdateTimeout<< (countertimes[aa]- countertimes[aa-1]) <<endl;
+    /*
         for (EdgeIt e(network); e != INVALID; ++e ) {
             network.capacity(e, l);
             network.weight  (e, DEF_LINK_WEIGHT);
         }//for
-        
-        GraphIO::writeGraph(network, o);
+    */
+     //   GraphIO::writeGraph(network, o);
         //GraphIO::writeGraph(Flowwork,"flow.txt");
         //cout << "Saved in : '" << o << "!" << endl;
     }//try
